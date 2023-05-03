@@ -1,12 +1,14 @@
 
 const myForm = document.querySelector('#myForm');
-// const name_input = document.querySelector('#name');
-// const email_input = document.querySelector('#email');
+var name_input = document.querySelector('#name');
+var email_input = document.querySelector('#email');
 // const btn = document.querySelector('#button');
 let list = document.querySelector('#list');
 // localStorage.setItem('userData',JSON.stringify({}));
 myForm.addEventListener('submit', onSubmit);
 list.addEventListener('click',deleteItem);
+list.addEventListener('click',editItem);
+
 
 function onSubmit(event){
     event.preventDefault();
@@ -39,6 +41,12 @@ function onSubmit(event){
         var text = document.createTextNode('delete');
         deleteBtn.appendChild(text);
         li.appendChild(deleteBtn);
+        // adding edit button
+        var editBtn = document.createElement('button');
+        editBtn.className = 'btn btn-primary btn-sm me-1 edit float-end';
+        var text = document.createTextNode('edit');
+        editBtn.appendChild(text);
+        li.appendChild(editBtn);
         // storing user data in form of key value pair //
         // localStorage.setItem(name,email);
         // storing user data in form of object //
@@ -58,4 +66,16 @@ function deleteItem(event){
         let email = (event.target.parentElement.querySelector('.userEmail').textContent);
         localStorage.removeItem(email);
     }
+}
+// edit item
+function editItem(event){
+    if(event.target.className.indexOf('edit')!=-1){
+        // console.log("edit button pressed");
+        name_input.value = event.target.parentElement.querySelector('.userName').textContent;
+        email_input.value = event.target.parentElement.querySelector('.userEmail').textContent;
+    }
+    event.target.className = 'delete';
+    deleteItem(event);
+    // name_input.value = 'name here';
+    // email_input.value = 'email here';
 }
