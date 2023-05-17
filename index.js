@@ -51,8 +51,21 @@ function onSubmit(event){
         // localStorage.setItem(name,email);
         // storing user data in form of object //
         // var userData = JSON.parse(localStorage.getItem('userData'));
+        
+        // storing to locall storage
         userData = {name:name,email:email};
         localStorage.setItem(email,JSON.stringify(userData));
+
+        // storing to cloud using axios
+        axios.post('https://crudcrud.com/api/29a542450ad8436b8679e0ddacb7019b/users',{
+            "name":name,
+            "email":email
+        })
+         .then(res=>alert('user added'))
+         .catch(err=>{
+            alert('something went wrong');
+            console.error(err);
+        })
         event.target.name.value = '';
         event.target.email.value = '';
     }
@@ -64,7 +77,9 @@ function deleteItem(event){
     if((event.target.className).indexOf('delete')!=-1){
         list.removeChild(event.target.parentElement);
         let email = (event.target.parentElement.querySelector('.userEmail').textContent);
+        // deletion from local storage
         localStorage.removeItem(email);
+        
     }
 }
 // edit item
