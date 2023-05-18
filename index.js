@@ -12,7 +12,7 @@ let list = document.querySelector('#list');
 myForm.addEventListener('submit', onSubmit);
 list.addEventListener('click', deleteItem);
 list.addEventListener('click', editItem);
-document.addEventListener('DOMContentLoaded',loadItems);
+document.addEventListener('DOMContentLoaded', loadItems);
 
 function createNewList(name, email) {
     // creating li element
@@ -47,7 +47,7 @@ function createNewList(name, email) {
 }
 
 function saveDataToCloud(data) {
-    axiosInstance.post('/users',data)
+    axiosInstance.post('/users', data)
         .then(res => {
             createNewList(data.name, data.email);
             console.log("data added successfully");
@@ -90,45 +90,46 @@ function deleteItem(event) {
 function editItem(event) {
     if (event.target.className.indexOf('edit') != -1) {
         // console.log("edit button pressed");
-        name_input.value = event.target.parentElement.querySelector('.userName').textContent;
-        email_input.value = event.target.parentElement.querySelector('.userEmail').textContent;
+        let userName = event.target.parentElement.querySelector('.userName').textContent;
+        name_input.value = userName;
+        userEmail = event.target.parentElement.querySelector('.userEmail').textContent;
+        email_input.value = userEmail;
+        event.target.className = 'delete';
+        list.removeChild(event.target.parentElement);
+        deleteFromCloud(userEmail);
     }
-    event.target.className = 'delete';
-    // deleteItem(event);
-    // name_input.value = 'name here';
-    // email_input.value = 'email here';
 }
 // on loading site load items from cooud
-function loadItems(){
+function loadItems() {
     axiosInstance.get('/users')
-     .then(res => {
-        res.data.forEach((item)=>{
-            createNewList(item.name,item.email);
+        .then(res => {
+            res.data.forEach((item) => {
+                createNewList(item.name, item.email);
+            })
         })
-     })
-     .catch(err => {
-        console.error(err);
-     })
+        .catch(err => {
+            console.error(err);
+        })
 }
-function deleteFromCloud(email){
+function deleteFromCloud(email) {
     axiosInstance.get('/users')
-     .then(res => {
-        res.data.forEach(item =>{
-            if(item.email===email){
-                
-                axiosInstance.delete(`/users/${item._id}`)
-                 .then(res =>{
-                    //  loadItems(); actually it load item from cloud and result is appeded in frontend so duplicate data
-                     console.log(res);
-                     console.log('deleted successfully');
-                 })
-                 .catch(err=>{
-                    console.error(err);
-                 })
-            }
+        .then(res => {
+            res.data.forEach(item => {
+                if (item.email === email) {
+
+                    axiosInstance.delete(`/users/${item._id}`)
+                        .then(res => {
+                            //  loadItems(); actually it load item from cloud and result is appeded in frontend so duplicate data
+                            console.log(res);
+                            console.log('deleted successfully');
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        })
+                }
+            })
         })
-     })
-     .catch(err => {
-        console.error(err);
-     })
+        .catch(err => {
+            console.error(err);
+        })
 }
